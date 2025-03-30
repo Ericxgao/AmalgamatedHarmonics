@@ -119,7 +119,7 @@ void Circle::process(const ProcessArgs &args) {
 	if (rotLStatus) {
 		if (debugEnabled()) { std::cout << stepX << " Rotate left: " << curKeyIndex; }
 		if (inVoltScale == music::RootScaling::CIRCLE) {
-			curKeyIndex = curKeyIndex ? 11 : curKeyIndex - 1; // Wrap
+			curKeyIndex = curKeyIndex == 0 ? 11 : curKeyIndex - 1; // Wrap
 		} else {
 			curKeyIndex = curKeyIndex + 5;
 			if (curKeyIndex > 11) {
