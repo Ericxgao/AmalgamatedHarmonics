@@ -21,11 +21,11 @@ void init(rack::Plugin *p) {
 	p->addModel(modelRuckus);
 	p->addModel(modelScaleQuantizer2);
 	p->addModel(modelSLN);
-	p->addModel(modelMuxDeMux);
-	p->addModel(modelPolyProbe);
-	p->addModel(modelPolyScope);
-	p->addModel(modelPolyUtils);
-	p->addModel(modelPolyVolt);
+	// p->addModel(modelMuxDeMux);
+	// p->addModel(modelPolyProbe);
+	// p->addModel(modelPolyScope);
+	// p->addModel(modelPolyUtils);
+	// p->addModel(modelPolyVolt);
 
 	p->addModel(modelScaleQuantizer);
 	p->addModel(modelArpeggiator2);

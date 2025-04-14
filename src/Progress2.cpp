@@ -404,14 +404,14 @@ struct Progress2Widget : ModuleWidget {
 
 		struct GateModeItem : Progress2Menu {
 			Progress2::GateMode gateMode;
-			void onAction(const rack::event::Action &e) override {
+			void onAction(const rack::widget::Widget::ActionEvent &e) override {
 				module->gateMode = gateMode;
 			}
 		};
 
 		struct OffsetItem : Progress2Menu {
 			int offset;
-			void onAction(const rack::event::Action &e) override {
+			void onAction(const rack::widget::Widget::ActionEvent &e) override {
 				module->pState.offset = offset;
 				module->pState.stateChanged = true;
 			}
@@ -419,7 +419,7 @@ struct Progress2Widget : ModuleWidget {
 
 		struct ChordModeItem : Progress2Menu {
 			ChordMode chordMode;
-			void onAction(const rack::event::Action &e) override {
+			void onAction(const rack::widget::Widget::ActionEvent &e) override {
 				module->pState.chordMode = chordMode;
 				module->pState.modeChanged = true;
 			}
@@ -466,7 +466,7 @@ struct Progress2Widget : ModuleWidget {
 
 		struct ScalingItem : Progress2Menu {
 			music::RootScaling voltScale;
-			void onAction(const rack::event::Action &e) override {
+			void onAction(const rack::widget::Widget::ActionEvent &e) override {
 				module->voltScale = voltScale;
 			}
 		};

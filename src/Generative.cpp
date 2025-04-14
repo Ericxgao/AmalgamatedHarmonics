@@ -422,7 +422,7 @@ struct GenerativeWidget : ModuleWidget {
 
 		struct QuantiseItem : GenerativeMenu {
 			bool mode;
-			void onAction(const rack::event::Action &e) override {
+			void onAction(const rack::widget::Widget::ActionEvent &e) override {
 				module->quantise = mode;
 			}
 		};
@@ -442,7 +442,7 @@ struct GenerativeWidget : ModuleWidget {
 
 		struct OffsetItem : GenerativeMenu {
 			bool offset;
-			void onAction(const rack::event::Action &e) override {
+			void onAction(const rack::widget::Widget::ActionEvent &e) override {
 				module->offset = offset;
 			}
 		};

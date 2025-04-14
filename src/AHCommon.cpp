@@ -1,6 +1,8 @@
 #include "AHCommon.hpp"
 
+#ifndef METAMODULE
 #include <sstream>
+#endif
 
 namespace ah {
 
@@ -876,6 +878,7 @@ KnownChords::KnownChords() {
 }
 
 void KnownChords::dump() {
+	#ifndef METAMODULE
 	for(ChordDefinition chord: chords) {
 		std::cout << chord.id << " = " << chord.name << std::endl;
 		for(InversionDefinition inv: chord.inversions) {
@@ -889,6 +892,7 @@ void KnownChords::dump() {
 			std::cout << inv.inversion << "(" << inv.formula.size() <<  ") = " << ss.str() << std::endl;
 		}
 	}
+	#endif
 }
 
 const InversionDefinition &KnownChords::getChord(Chord currChord) {

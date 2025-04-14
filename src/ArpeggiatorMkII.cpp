@@ -647,13 +647,17 @@ void Arpeggiator2::process(const ProcessArgs &args) {
 
 	// Always play something
 	if (nValidPitches == 0) {
-		if (debugEnabled()) { std::cout << stepX << " " << id  << " No inputs, assume single 0V pitch" << std::endl; }
+		#ifndef METAMODULE
+if (debugEnabled()) { std::cout << stepX << " " << id  << " No inputs, assume single 0V pitch" << std::endl; }
+#endif
 		nValidPitches = 1;
 	}
 
 	// Need to understand why this happens
 	if (inputLen == 0) {
-		if (debugEnabled()) { std::cout << stepX << " " << id  << " InputLen == 0, aborting" << std::endl; }
+		#ifndef METAMODULE
+if (debugEnabled()) { std::cout << stepX << " " << id  << " InputLen == 0, aborting" << std::endl; }
+#endif
 		return; // No inputs, no music
 	}
 
@@ -665,31 +669,41 @@ void Arpeggiator2::process(const ProcessArgs &args) {
 	// Has the trigger input been fired
 	if (triggerStatus) {
 		triggerPulse.trigger(5e-5);
+		#ifndef METAMODULE
 		if (debugEnabled()) { std::cout << stepX << " " << id  << " Triggered" << std::endl; }
+		#endif
 	}
 
 	// Update the trigger pulse and determine if it is still high
 	bool triggerHigh = triggerPulse.process(args.sampleTime);
 	if (debugEnabled()) {
+		#ifndef METAMODULE
 		if (triggerHigh) {
 			std::cout << stepX << " " << id  << " Trigger is high" << std::endl;
 		}
+		#endif
 	}
 
 	// Update lock
 	if (lockStatus) {
+		#ifndef METAMODULE
 		if (debugEnabled()) { std::cout << "Toggling lock: " << locked << std::endl; }
+		#endif
 		locked = !locked;
 	}
 
 	if (newSequence) {
 		newSequence--;
-		if (debugEnabled()) { std::cout << stepX << " " << id  << " Countdown newSequence: " << newSequence << std::endl; }
+		#ifndef METAMODULE
+if (debugEnabled()) { std::cout << stepX << " " << id  << " Countdown newSequence: " << newSequence << std::endl; }
+#endif
 	}
 
 	if (newCycle) {
 		newCycle--;
-		if (debugEnabled()) { std::cout << stepX << " " << id  << " Countdown newCycle: " << newCycle << std::endl; }
+		#ifndef METAMODULE
+if (debugEnabled()) { std::cout << stepX << " " << id  << " Countdown newCycle: " << newCycle << std::endl; }
+#endif
 	}
 
 	// OK so the problem here might be that the clock gate is still high right after the trigger gate fired on the previous step
@@ -697,13 +711,17 @@ void Arpeggiator2::process(const ProcessArgs &args) {
 	// Has the clock input been fired
 	bool isClocked = false;
 	if (clockStatus && !triggerHigh) {
-		if (debugEnabled()) { std::cout << stepX << " " << id  << " Clocked" << std::endl; }
+		#ifndef METAMODULE
+if (debugEnabled()) { std::cout << stepX << " " << id  << " Clocked" << std::endl; }
+#endif
 		isClocked = true;
 	}
 
 	// Has the trigger input been fired, either on the input or button
 	if (triggerStatus || buttonStatus) {
-		if (debugEnabled()) { std::cout << stepX << " " << id  << " Start countdown " << clockActive <<std::endl; }
+		#ifndef METAMODULE
+if (debugEnabled()) { std::cout << stepX << " " << id  << " Start countdown " << clockActive <<std::endl; }
+#endif
 		if (clockActive) {
 			newSequence = COUNTDOWN;
 			newCycle = COUNTDOWN;
@@ -714,25 +732,33 @@ void Arpeggiator2::process(const ProcessArgs &args) {
 	if (triggerStatus && isRunning && !currPatt->isPatternFinished()) {
 			// Pulse the EOS gate
 		eosPulse.trigger(digital::TRIGGER);
-		if (debugEnabled()) { std::cout << stepX << " " << id  << " Short sequence" << std::endl; }
+		#ifndef METAMODULE
+if (debugEnabled()) { std::cout << stepX << " " << id  << " Short sequence" << std::endl; }
+#endif
 	}
 
 	// So this is where the free-running could be triggered
 	if (isClocked && !isRunning) { // Must have a clock and not be already running
 		if (!trigActive) { // If nothing plugged into the TRIG input
-			if (debugEnabled()) { std::cout << stepX << " " << id  << " Free running sequence; starting" << std::endl; }
+			#ifndef METAMODULE
+if (debugEnabled()) { std::cout << stepX << " " << id  << " Free running sequence; starting" << std::endl; }
+#endif
 			freeRunning = true; // We're free-running
 			newSequence = COUNTDOWN;
 			newCycle = LAUNCH;
 		} else {
-			if (debugEnabled()) { std::cout << stepX << " " << id  << " Triggered sequence; wait for trigger" << std::endl; }
+			#ifndef METAMODULE
+if (debugEnabled()) { std::cout << stepX << " " << id  << " Triggered sequence; wait for trigger" << std::endl; }
+#endif
 			freeRunning = false;
 		}
 	}
 
 	// Detect cable being plugged in when free-running, stop free-running
 	if (freeRunning && trigActive && isRunning) {
-		if (debugEnabled()) { std::cout << stepX << " " << id  << " TRIG input re-connected" << std::endl; }
+		#ifndef METAMODULE
+if (debugEnabled()) { std::cout << stepX << " " << id  << " TRIG input re-connected" << std::endl; }
+#endif
 		freeRunning = false;
 	}	
 
@@ -744,7 +770,9 @@ void Arpeggiator2::process(const ProcessArgs &args) {
 
 		// Pulse the EOC gate
 		eocPulse.trigger(digital::TRIGGER);
-		if (debugEnabled()) { std::cout << stepX << " " << id  << " Finished Cycle" << std::endl; }
+		#ifndef METAMODULE
+if (debugEnabled()) { std::cout << stepX << " " << id  << " Finished Cycle" << std::endl; }
+#endif
 
 		// Reached the end of the sequence
 		if (isRunning && currPatt->isPatternFinished()) {
@@ -759,11 +787,15 @@ void Arpeggiator2::process(const ProcessArgs &args) {
 	
 			// Pulse the EOS gate
 			eosPulse.trigger(digital::TRIGGER);
-			if (debugEnabled()) { std::cout << stepX << " " << id  << " Finished Sequence, flag: " << isRunning << std::endl; }
+			#ifndef METAMODULE
+if (debugEnabled()) { std::cout << stepX << " " << id  << " Finished Sequence, flag: " << isRunning << std::endl; }
+#endif
 
 		} else {
 			newCycle = LAUNCH;
-			if (debugEnabled()) { std::cout << stepX << " " << id  << " Flagging new cycle" << std::endl; }
+			#ifndef METAMODULE
+if (debugEnabled()) { std::cout << stepX << " " << id  << " Flagging new cycle" << std::endl; }
+#endif
 		}
 
 	}
@@ -792,9 +824,11 @@ void Arpeggiator2::process(const ProcessArgs &args) {
 
 		}
 
+		#ifndef METAMODULE
 		if (debugEnabled()) { std::cout << stepX << " " << id  << " Initiatise new Sequence: Pattern: " << currPatt->getName() << 
 			" Length: " << inputLen <<
 			" Locked: " << locked << std::endl; }
+		#endif
 
 		currPatt->initialise(length, scale, trans, freeRunning);
 
@@ -827,7 +861,9 @@ void Arpeggiator2::process(const ProcessArgs &args) {
 
 		}
 
-		if (debugEnabled()) { std::cout << stepX << " " << id  << " Initiatise new Cycle: " << nPitches << " " << currArp->getName() << std::endl; }
+		#ifndef METAMODULE
+if (debugEnabled()) { std::cout << stepX << " " << id  << " Initiatise new Cycle: " << nPitches << " " << currArp->getName() << std::endl; }
+#endif
 
 		currArp->initialise(nPitches, freeRunning);
 
@@ -838,14 +874,22 @@ void Arpeggiator2::process(const ProcessArgs &args) {
 	// Only advance from the clock
 	if (isRunning && (isClocked || newCycle == LAUNCH)) {
 
-		if (debugEnabled()) { std::cout << stepX << " " << id  << " Advance Cycle: " << currArp->getPitch() << std::endl; }
+		#ifndef METAMODULE
+if (debugEnabled()) { std::cout << stepX << " " << id  << " Advance Cycle: " << currArp->getPitch() << std::endl; }
+#endif
 
-		if (debugEnabled()) { std::cout << stepX << " " << id  << " Advance Cycle: " << pitches[currArp->getPitch()] << " " << (float)currPatt->getOffset() << std::endl; }
+		#ifndef METAMODULE
+if (debugEnabled()) { std::cout << stepX << " " << id  << " Advance Cycle: " << pitches[currArp->getPitch()] << " " << (float)currPatt->getOffset() << std::endl; }
+#endif
 
 		// Finally set the out voltage
 		outVolts = clamp(pitches[currArp->getPitch()] + music::SEMITONE * (float)currPatt->getOffset(), -10.0f, 10.0f);
 
-		if (debugEnabled()) { std::cout << stepX << " " << id  << " Output V = " << outVolts << std::endl; }
+		#ifndef METAMODULE
+		#ifndef METAMODULE
+if (debugEnabled()) { std::cout << stepX << " " << id  << " Output V = " << outVolts << std::endl; }
+#endif
+		#endif
 
 		// Update counters
 		currArp->advance();
@@ -1006,7 +1050,7 @@ struct Arpeggiator2Widget : ModuleWidget {
 		struct GateModeItem : MenuItem {
 			Arpeggiator2 *module;
 			Arpeggiator2::GateMode gateMode;
-			void onAction(const rack::event::Action &e) override {
+			void onAction(const rack::widget::Widget::ActionEvent &e) override {
 				module->gateMode = gateMode;
 			}
 		};

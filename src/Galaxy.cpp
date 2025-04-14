@@ -337,9 +337,11 @@ void Galaxy::getFromRandom() {
 	int rotateInput = signedRndNotZero(2);
 	int radialInput = signedRndNotZero(2);
 
+	#ifndef METAMODULE
 	if(debugEnabled(5000)) {
 		std::cout << "Rotate: " << rotateInput << "  Radial: " << radialInput << std::endl;
 	}
+	#endif
 
 	// Determine move around the grid
 	currChord.quality += rotateInput;
@@ -355,9 +357,11 @@ void Galaxy::getFromKey() {
 	int rotateInput = signedRndNotZero(2);
 	int radialInput = signedRndNotZero(2);
 
+	#ifndef METAMODULE
 	if(debugEnabled(5000)) {
 		std::cout << "Rotate: " << rotateInput << "  Radial: " << radialInput << std::endl;
 	}
+	#endif
 
 	// Determine move around the grid
 	currChord.quality += rotateInput;
@@ -522,7 +526,7 @@ struct GalaxyWidget : ModuleWidget {
 
 		struct OffsetItem : GalaxyMenu {
 			int offset;
-			void onAction(const rack::event::Action &e) override {
+			void onAction(const rack::widget::Widget::ActionEvent &e) override {
 				module->offset = offset;
 			}
 		};
@@ -542,7 +546,7 @@ struct GalaxyWidget : ModuleWidget {
 
 		struct ModeItem : GalaxyMenu {
 			int mode;
-			void onAction(const rack::event::Action &e) override {
+			void onAction(const rack::widget::Widget::ActionEvent &e) override {
 				module->mode = mode;
 			}
 		};
@@ -562,7 +566,7 @@ struct GalaxyWidget : ModuleWidget {
 
 		struct InversionItem : GalaxyMenu {
 			int allowedInversions;
-			void onAction(const rack::event::Action &e) override {
+			void onAction(const rack::widget::Widget::ActionEvent &e) override {
 				module->allowedInversions = allowedInversions;
 			}
 		};
@@ -582,7 +586,7 @@ struct GalaxyWidget : ModuleWidget {
 
 		struct ScalingItem : GalaxyMenu {
 			music::RootScaling voltScale;
-			void onAction(const rack::event::Action &e) override {
+			void onAction(const rack::widget::Widget::ActionEvent &e) override {
 				module->voltScale = voltScale;
 			}
 		};

@@ -651,16 +651,28 @@ void Arp31::process(const ProcessArgs &args) {
 
 	bool restart = false;
 
-	if (debugEnabled()) { std::cout << stepX << " " << id  << " Check clock" << std::endl; }
+	#ifndef METAMODULE
+	#ifndef METAMODULE
+if (debugEnabled()) { std::cout << stepX << " " << id  << " Check clock" << std::endl; }
+#endif
+	#endif
 
 	// Have we been clocked?
 	if (clockStatus) {
 
-		if (debugEnabled()) { std::cout << stepX << " " << id  << " Check EOC" << std::endl; }
+		#ifndef METAMODULE
+		#ifndef METAMODULE
+if (debugEnabled()) { std::cout << stepX << " " << id  << " Check EOC" << std::endl; }
+#endif
+		#endif
 
 		// EOC was fired at last sequence step
 		if (eoc) {
-			if (debugEnabled()) { std::cout << stepX << " " << id  << " EOC fired" << std::endl; }
+			#ifndef METAMODULE
+			#ifndef METAMODULE
+if (debugEnabled()) { std::cout << stepX << " " << id  << " EOC fired" << std::endl; }
+#endif
+			#endif
 			eocPulse.trigger(digital::TRIGGER);
 			eoc = false;
 		}	
@@ -668,7 +680,11 @@ void Arp31::process(const ProcessArgs &args) {
 		// If we are already running, process cycle
 		if (isRunning) {
 
-			if (debugEnabled()) { std::cout << stepX << " " << id  << " Advance Cycle: " << currArp->getPitch() << " " << pitches[currArp->getPitch()] << std::endl; }
+			#ifndef METAMODULE
+			#ifndef METAMODULE
+if (debugEnabled()) { std::cout << stepX << " " << id  << " Advance Cycle: " << currArp->getPitch() << " " << pitches[currArp->getPitch()] << std::endl; }
+#endif
+			#endif
 
 			// Reached the end of the pattern?
 			if (currArp->isArpeggioFinished()) {
@@ -676,7 +692,11 @@ void Arp31::process(const ProcessArgs &args) {
 				// Trigger EOC mechanism
 				eoc = true;
 
-				if (debugEnabled()) { std::cout << stepX << " " << id  << " Finished Cycle" << std::endl; }
+				#ifndef METAMODULE
+				#ifndef METAMODULE
+if (debugEnabled()) { std::cout << stepX << " " << id  << " Finished Cycle" << std::endl; }
+#endif
+				#endif
 				restart = true;
 
 			} 
@@ -685,7 +705,11 @@ void Arp31::process(const ProcessArgs &args) {
 			size_t idx = currArp->getPitch();
 			outVolts = clamp(pitches[idx], -10.0f, 10.0f);
 
-			if (debugEnabled()) { std::cout << stepX << " " << id  << " Index: " << idx << " V: " << outVolts << " Light: " << currLight << std::endl; }
+			#ifndef METAMODULE
+			#ifndef METAMODULE
+if (debugEnabled()) { std::cout << stepX << " " << id  << " Index: " << idx << " V: " << outVolts << " Light: " << currLight << std::endl; }
+#endif
+			#endif
 
 			// Pulse the output gate
 			gatePulse.trigger(digital::TRIGGER);
@@ -707,7 +731,11 @@ void Arp31::process(const ProcessArgs &args) {
 		currArp->randomize();
 	}
 
-	if (debugEnabled()) { std::cout << stepX << " " << id  << " Check restart" << std::endl; }
+	#ifndef METAMODULE
+	#ifndef METAMODULE
+if (debugEnabled()) { std::cout << stepX << " " << id  << " Check restart" << std::endl; }
+#endif
+	#endif
 
 	// If we have been triggered, start a new sequence
 	if (restart) {
@@ -718,7 +746,11 @@ void Arp31::process(const ProcessArgs &args) {
 			pitches.clear();
 			if (inputs[PITCH_INPUT].isConnected()) {
 				int channels = inputs[PITCH_INPUT].getChannels();
-				if (debugEnabled()) { std::cout << stepX << " " << id  << " Channels: " << channels << std::endl; }
+				#ifndef METAMODULE	
+				#ifndef METAMODULE
+if (debugEnabled()) { std::cout << stepX << " " << id  << " Channels: " << channels << std::endl; }
+#endif
+				#endif
 
 				if (inputs[GATE_INPUT].isConnected()) {
 					for (int p = 0; p < channels; p++) {
@@ -735,28 +767,48 @@ void Arp31::process(const ProcessArgs &args) {
 			} 
 
 			if (pitches.size() == 0) {
-				if (debugEnabled()) { std::cout << stepX << " " << id  << " No inputs, assume single 0V pitch" << std::endl; }
+				#ifndef METAMODULE
+				#ifndef METAMODULE
+if (debugEnabled()) { std::cout << stepX << " " << id  << " No inputs, assume single 0V pitch" << std::endl; }
+#endif
+				#endif
 				pitches.push_back(0.0f);
 			}
 
-			if (debugEnabled()) { std::cout << stepX << " " << id  << " Pitches: " << pitches.size() << std::endl; }
+			#ifndef METAMODULE
+			#ifndef METAMODULE
+if (debugEnabled()) { std::cout << stepX << " " << id  << " Pitches: " << pitches.size() << std::endl; }
+#endif
+			#endif
 
 			// At the first step of the cycle
 			// So this is where we tweak the cycle parameters
 			currArp = arps[inputArp];
 
-			if (debugEnabled()) { std::cout << stepX << " " << id  << " Initiatise new Cycle: Pattern: " << currArp->getName() << " nPitches: " << pitches.size() << std::endl; }
+			#ifndef METAMODULE
+			#ifndef METAMODULE
+if (debugEnabled()) { std::cout << stepX << " " << id  << " Initiatise new Cycle: Pattern: " << currArp->getName() << " nPitches: " << pitches.size() << std::endl; }
+#endif
+			#endif
 			
 			currArp->initialise(pitches.size(), offset, repeatEnd);
 
 		} else {
 
 			if (pitches.size() == 0) {
-				if (debugEnabled()) { std::cout << stepX << " " << id  << " No inputs, assume single 0V pitch" << std::endl; }
+				#ifndef METAMODULE
+				#ifndef METAMODULE
+if (debugEnabled()) { std::cout << stepX << " " << id  << " No inputs, assume single 0V pitch" << std::endl; }
+#endif
+				#endif
 				pitches.push_back(0.0f);
 			}
 
-			if (debugEnabled()) { std::cout << stepX << " " << id  << " Hold Cycle: Pattern: " << currArp->getName() << " nPitches: " << pitches.size() << std::endl; }
+			#ifndef METAMODULE
+			#ifndef METAMODULE
+if (debugEnabled()) { std::cout << stepX << " " << id  << " Hold Cycle: Pattern: " << currArp->getName() << " nPitches: " << pitches.size() << std::endl; }
+#endif
+			#endif
 
 			currArp->reset();
 
@@ -774,7 +826,11 @@ void Arp31::process(const ProcessArgs &args) {
 
 	bool gPulse = gatePulse.process(args.sampleTime);
 
-	if (debugEnabled()) { std::cout << stepX << " " << id  << " Do gate status" << std::endl; }
+	#ifndef METAMODULE
+	#ifndef METAMODULE
+if (debugEnabled()) { std::cout << stepX << " " << id  << " Do gate status" << std::endl; }
+#endif
+	#endif
 
 	bool gatesOn = isRunning;
 	if (gateMode == TRIGGER) {
@@ -782,14 +838,23 @@ void Arp31::process(const ProcessArgs &args) {
 	} else if (gateMode == RETRIGGER) {
 		gatesOn = gatesOn && !gPulse;
 	}
-	if (debugEnabled()) { std::cout << stepX << " " << id  << " Checked gate status" << std::endl; }
-	
+
+	#ifndef METAMODULE
+	#ifndef METAMODULE
+if (debugEnabled()) { std::cout << stepX << " " << id  << " Checked gate status" << std::endl; }
+#endif
+	#endif
+
 	bool cPulse = eocPulse.process(args.sampleTime);
 
 	outputs[GATE_OUTPUT].setVoltage(gatesOn ? 10.0 : 0.0);
 	outputs[EOC_OUTPUT].setVoltage(cPulse ? 10.0 : 0.0);
 
-	if (debugEnabled()) { std::cout << stepX << " " << id  << " Finish output phase" << std::endl; }
+	#ifndef METAMODULE
+	#ifndef METAMODULE
+if (debugEnabled()) { std::cout << stepX << " " << id  << " Finish output phase" << std::endl; }
+#endif
+	#endif
 
 }
 
@@ -879,7 +944,7 @@ struct Arp31Widget : ModuleWidget {
 
 		struct GateModeItem : Arp31Menu {
 			Arp31::GateMode gateMode;
-			void onAction(const rack::event::Action &e) override {
+			void onAction(const rack::widget::Widget::ActionEvent &e) override {
 				module->gateMode = gateMode;
 			}
 		};
@@ -899,7 +964,7 @@ struct Arp31Widget : ModuleWidget {
 
 		struct RepeatModeItem : Arp31Menu {
 			bool repeatEnd;
-			void onAction(const rack::event::Action &e) override {
+			void onAction(const rack::widget::Widget::ActionEvent &e) override {
 				module->repeatEnd = repeatEnd;
 			}
 		};

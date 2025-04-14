@@ -296,7 +296,7 @@ struct ScaleQuantizer2Widget : ModuleWidget {
 
 		struct ScalingItem : ScaleQuantizer2Menu {
 			music::RootScaling voltScale;
-			void onAction(const rack::event::Action &e) override {
+			void onAction(const rack::widget::Widget::ActionEvent &e) override {
 				module->voltScale = voltScale;
 			}
 		};

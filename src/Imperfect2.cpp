@@ -101,7 +101,9 @@ void Imperfect2::process(const ProcessArgs &args) {
 		} else {
 			// We have an output plugged in this row and previously seen a trigger on previous row
 			if (outputActive && lastValidInput > -1) {
-				if (debugEnabled()) { std::cout << stepX << " " << i << " has active out and has seen trigger on " << lastValidInput << std::endl; }
+				#ifndef METAMODULE
+if (debugEnabled()) { std::cout << stepX << " " << i << " has active out and has seen trigger on " << lastValidInput << std::endl; }
+#endif
 				generateSignal = true;
 			}
 

@@ -421,7 +421,7 @@ struct PolyScopeWidget : ModuleWidget {
 
 		struct ColourItem : PolyScopeMenu {
 			int cMap;
-			void onAction(const rack::event::Action &e) override {
+			void onAction(const rack::widget::Widget::ActionEvent &e) override {
 				module->currCMap = cMap;
 			}
 		};

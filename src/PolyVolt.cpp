@@ -265,7 +265,7 @@ struct PolyVoltWidget : ModuleWidget {
 
 		struct QuantiseItem : PolyVoltMenu {
 			bool mode;
-			void onAction(const rack::event::Action &e) override {
+			void onAction(const rack::widget::Widget::ActionEvent &e) override {
 				module->quantise = mode;
 				module->updateUI = true;
 			}

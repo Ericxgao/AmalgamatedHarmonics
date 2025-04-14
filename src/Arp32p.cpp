@@ -547,7 +547,9 @@ void Arp32::process(const ProcessArgs &args) {
 
 	// Need to understand why this happens
 	if (inputLen == 0) {
+		#ifndef METAMODULE
 		if (debugEnabled(5000)) { std::cout << stepX << " " << id  << " InputLen == 0, aborting" << std::endl; }
+		#endif
 		return; // No inputs, no music
 	}
 
@@ -570,7 +572,11 @@ void Arp32::process(const ProcessArgs &args) {
 		// If we are already running, process cycle
 		if (isRunning) {
 
-			if (debugEnabled()) { std::cout << stepX << " " << id  << " Advance Cycle: " << currPatt->getOffset() << std::endl; }
+			#ifndef METAMODULE
+			#ifndef METAMODULE
+if (debugEnabled()) { std::cout << stepX << " " << id  << " Advance Cycle: " << currPatt->getOffset() << std::endl; }
+#endif
+			#endif
 
 			// Reached the end of the pattern?
 			if (currPatt->isPatternFinished()) {
@@ -578,7 +584,11 @@ void Arp32::process(const ProcessArgs &args) {
 				// Trigger EOC mechanism
 				eoc = true;
 
-				if (debugEnabled()) { std::cout << stepX << " " << id  << " Finished Cycle" << std::endl; }
+				#ifndef METAMODULE
+				#ifndef METAMODULE
+if (debugEnabled()) { std::cout << stepX << " " << id  << " Finished Cycle" << std::endl; }
+#endif
+				#endif
 				restart = true;
 
 			} 
@@ -586,7 +596,11 @@ void Arp32::process(const ProcessArgs &args) {
 			// Finally set the out voltage
 			outVolts = clamp(rootPitch + music::SEMITONE * (float)currPatt->getOffset(), -10.0f, 10.0f);
 
-			if (debugEnabled()) { std::cout << stepX << " " << id  << " Output V = " << outVolts << std::endl; }
+			#ifndef METAMODULE	
+			#ifndef METAMODULE
+if (debugEnabled()) { std::cout << stepX << " " << id  << " Output V = " << outVolts << std::endl; }
+#endif
+			#endif
 
 			// Pulse the output gate
 			gatePulse.trigger(digital::TRIGGER);
@@ -633,19 +647,23 @@ void Arp32::process(const ProcessArgs &args) {
 			// Save pitch
 			rootPitch = inputPitch;
 
+			#ifndef METAMODULE
 			if (debugEnabled()) { std::cout << stepX << " " << id  << 
 				" Initiatise new Cycle: Pattern: " << currPatt->getName() << 
 				" Length: " << inputLen << std::endl; 
 			}
+			#endif
 
 			currPatt->initialise(length, scale, size, offset, repeatEnd);
 
 		} else {
 
+			#ifndef METAMODULE
 			if (debugEnabled()) { std::cout << stepX << " " << id  << 
 				" Hold new Cycle: Pattern: " << currPatt->getName() << 
 				" Length: " << inputLen << std::endl; 
 			}
+			#endif
 
 			currPatt->reset();
 
@@ -794,7 +812,7 @@ struct Arp32Widget : ModuleWidget {
 
 		struct GateModeItem : Arp32Menu {
 			Arp32::GateMode gateMode;
-			void onAction(const rack::event::Action &e) override {
+			void onAction(const rack::widget::Widget::ActionEvent &e) override {
 				module->gateMode = gateMode;
 			}
 		};
@@ -814,7 +832,7 @@ struct Arp32Widget : ModuleWidget {
 
 		struct RepeatModeItem : Arp32Menu {
 			bool repeatEnd;
-			void onAction(const rack::event::Action &e) override {
+			void onAction(const rack::widget::Widget::ActionEvent &e) override {
 				module->repeatEnd = repeatEnd;
 			}
 		};

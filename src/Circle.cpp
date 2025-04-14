@@ -117,7 +117,9 @@ void Circle::process(const ProcessArgs &args) {
 	bool rotRStatus		= rotRTrigger.process(rotRInput);
 
 	if (rotLStatus) {
-		if (debugEnabled()) { std::cout << stepX << " Rotate left: " << curKeyIndex; }
+		#ifndef METAMODULE
+if (debugEnabled()) { std::cout << stepX << " Rotate left: " << curKeyIndex; }
+#endif
 		if (inVoltScale == music::RootScaling::CIRCLE) {
 			curKeyIndex = curKeyIndex ? 11 : curKeyIndex - 1; // Wrap
 		} else {
@@ -127,11 +129,15 @@ void Circle::process(const ProcessArgs &args) {
 			}
 		}
 
-		if (debugEnabled()) { std::cout << " -> " << curKeyIndex << std::endl;	}
+		#ifndef METAMODULE
+if (debugEnabled()) { std::cout << " -> " << curKeyIndex << std::endl;	}
+#endif
 	} 
 
 	if (rotRStatus) {
-		if (debugEnabled()) { std::cout << stepX << " Rotate right: " << curKeyIndex; }
+		#ifndef METAMODULE
+if (debugEnabled()) { std::cout << stepX << " Rotate right: " << curKeyIndex; }
+#endif
 		if (inVoltScale == music::RootScaling::CIRCLE) {
 			curKeyIndex = curKeyIndex == 11 ? 0 : curKeyIndex + 1; // Wrap
 		} else {
@@ -140,16 +146,22 @@ void Circle::process(const ProcessArgs &args) {
 				curKeyIndex = curKeyIndex + 12;
 			}
 		}
-		if (debugEnabled()) { std::cout << " -> " << curKeyIndex << std::endl;	}
+		#ifndef METAMODULE
+if (debugEnabled()) { std::cout << " -> " << curKeyIndex << std::endl;	}
+#endif
 	} 
 
 	if (rotLStatus && rotRStatus) {
-		if (debugEnabled()) { std::cout << stepX << " Reset " << curKeyIndex << std::endl;	}
+		#ifndef METAMODULE
+if (debugEnabled()) { std::cout << stepX << " Reset " << curKeyIndex << std::endl;	}
+#endif
 		curKeyIndex = baseKeyIndex;
 	}
 
 	if (newKeyIndex != baseKeyIndex) {
-		if (debugEnabled()) { std::cout << stepX << " New base: " << newKeyIndex << std::endl;}
+		#ifndef METAMODULE
+if (debugEnabled()) { std::cout << stepX << " New base: " << newKeyIndex << std::endl;}
+#endif
 		baseKeyIndex = newKeyIndex;
 		curKeyIndex = newKeyIndex;
 	}
@@ -254,7 +266,7 @@ struct CircleWidget : ModuleWidget {
 
 		struct InScalingItem : CircleMenu {
 			music::RootScaling inVoltScale;
-			void onAction(const rack::event::Action &e) override {
+			void onAction(const rack::widget::Widget::ActionEvent &e) override {
 				module->inVoltScale = inVoltScale;
 			}
 		};
@@ -274,7 +286,7 @@ struct CircleWidget : ModuleWidget {
 
 		struct OutScalingItem : CircleMenu {
 			music::RootScaling outVoltScale;
-			void onAction(const rack::event::Action &e) override {
+			void onAction(const rack::widget::Widget::ActionEvent &e) override {
 				module->outVoltScale = outVoltScale;
 			}
 		};

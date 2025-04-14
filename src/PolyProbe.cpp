@@ -347,7 +347,7 @@ struct PolyProbeWidget : ModuleWidget {
 
 		struct AlgoItem : PolyProbeMenu {
 			PolyProbe::Algorithms algo;
-			void onAction(const rack::event::Action &e) override {
+			void onAction(const rack::widget::Widget::ActionEvent &e) override {
 				module->currAlgo = algo;
 			}
 		};

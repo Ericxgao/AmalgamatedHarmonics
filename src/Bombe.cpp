@@ -486,7 +486,7 @@ struct BombeWidget : ModuleWidget {
 
 		struct OffsetItem : BombeMenu {
 			int offset;
-			void onAction(const rack::event::Action &e) override {
+			void onAction(const rack::widget::Widget::ActionEvent &e) override {
 				module->offset = offset;
 			}
 		};
@@ -506,7 +506,7 @@ struct BombeWidget : ModuleWidget {
 
 		struct ModeItem : BombeMenu {
 			int mode;
-			void onAction(const rack::event::Action &e) override {
+			void onAction(const rack::widget::Widget::ActionEvent &e) override {
 				module->mode = mode;
 			}
 		};
@@ -526,7 +526,7 @@ struct BombeWidget : ModuleWidget {
 
 		struct InversionItem : BombeMenu {
 			int allowedInversions;
-			void onAction(const rack::event::Action &e) override {
+			void onAction(const rack::widget::Widget::ActionEvent &e) override {
 				module->allowedInversions = allowedInversions;
 			}
 		};
@@ -546,7 +546,7 @@ struct BombeWidget : ModuleWidget {
 
 		struct ScalingItem : BombeMenu {
 			music::RootScaling voltScale;
-			void onAction(const rack::event::Action &e) override {
+			void onAction(const rack::widget::Widget::ActionEvent &e) override {
 				module->voltScale = voltScale;
 			}
 		};

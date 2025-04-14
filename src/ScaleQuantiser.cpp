@@ -54,15 +54,15 @@ void ScaleQuantizer::process(const ProcessArgs &args) {
 	lastPitch = currPitch;
 
 	// Get the input pitch
-	float volts = inputs[IN_INPUT].value;
-	float root =  inputs[KEY_INPUT].value;
-	float scale = inputs[SCALE_INPUT].value;
+	float volts = inputs[IN_INPUT].getVoltage();
+	float root =  inputs[KEY_INPUT].getVoltage();
+	float scale = inputs[SCALE_INPUT].getVoltage();
 
 	// Calculate output pitch from raw voltage
 	currPitch =  music::getPitchFromVolts(volts, root, scale, &currRoot, &currScale, &currNote, &currInterval);
 
 	// Set the value
-	outputs[OUT_OUTPUT].value = currPitch;
+	outputs[OUT_OUTPUT].setVoltage(currPitch);
 
 	// update tone lights
 	for (int i = 0; i < music::Notes::NUM_NOTES; i++) {
@@ -73,10 +73,10 @@ void ScaleQuantizer::process(const ProcessArgs &args) {
 	// update degree lights
 	for (int i = 0; i < music::Notes::NUM_NOTES; i++) {
 		lights[DEGREE_LIGHT + i].value = 0.0;
-		outputs[GATE_OUTPUT + i].value = 0.0;
+		outputs[GATE_OUTPUT + i].setVoltage(0.0);
 	}
 	lights[DEGREE_LIGHT + currInterval].value = 1.0;
-	outputs[GATE_OUTPUT + currInterval].value = 10.0;
+	outputs[GATE_OUTPUT + currInterval].setVoltage(10.0);
 
 	if (lastScale != currScale || firstStep) {
 		for (int i = 0; i <music::Notes::NUM_NOTES; i++) {
@@ -93,9 +93,9 @@ void ScaleQuantizer::process(const ProcessArgs &args) {
 	} 
 
 	if (lastPitch != currPitch || firstStep) {
-		outputs[TRIG_OUTPUT].value = 10.0;
+		outputs[TRIG_OUTPUT].setVoltage(10.0);
 	} else {
-		outputs[TRIG_OUTPUT].value = 0.0;		
+		outputs[TRIG_OUTPUT].setVoltage(0.0);		
 	}
 
 	firstStep = false;

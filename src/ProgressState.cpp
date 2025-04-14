@@ -272,12 +272,12 @@ void ProgressState::fromJson(json_t *rootJ) {
 // ProgressState
 
 // Root menu
-void RootItem::onAction(const rack::event::Action &e) {
+void RootItem::onAction(const rack::widget::Widget::ActionEvent &e) {
 	pChord->note = root;
 	pChord->dirty = true;
 }
 
-void RootChoice::onAction(const rack::event::Action &e) {
+void RootChoice::onAction(const rack::widget::Widget::ActionEvent &e) {
 	if (!pState)
 		return;
 
@@ -314,12 +314,12 @@ void RootChoice::step() {
 // Root 
 
 // Degree
-void DegreeItem::onAction(const rack::event::Action &e) {
+void DegreeItem::onAction(const rack::widget::Widget::ActionEvent &e) {
 	pChord->modeDegree = degree;
 	pChord->dirty = true;
 }
 
-void DegreeChoice::onAction(const rack::event::Action &e) {
+void DegreeChoice::onAction(const rack::widget::Widget::ActionEvent &e) {
 		if (!pState)
 		return;
 
@@ -357,7 +357,7 @@ void DegreeChoice::step() {
 // Degree
 
 // Chord 
-void ChordItem::onAction(const rack::event::Action &e)  {
+void ChordItem::onAction(const rack::widget::Widget::ActionEvent &e)  {
 	pChord->chord = chord;
 	pChord->dirty = true;
 }
@@ -377,7 +377,7 @@ Menu *ChordSubsetMenu::createChildMenu() {
 	return menu;
 }
 
-void ChordChoice::onAction(const rack::event::Action &e) {
+void ChordChoice::onAction(const rack::widget::Widget::ActionEvent &e) {
 	if (!pState)
 		return;
 
@@ -431,12 +431,12 @@ void ChordChoice::step() {
 // Chord menu
 
 // Octave
-void OctaveItem::onAction(const rack::event::Action &e) {
+void OctaveItem::onAction(const rack::widget::Widget::ActionEvent &e) {
 	pChord->octave = octave;
 	pChord->dirty = true;
 }
 
-void OctaveChoice::onAction(const rack::event::Action &e) {
+void OctaveChoice::onAction(const rack::widget::Widget::ActionEvent &e) {
 	if (!pState)
 		return;
 
@@ -473,12 +473,12 @@ void OctaveChoice::step() {
 // Octave 
 
 // Inversion 
-void InversionItem::onAction(const rack::event::Action &e) {
+void InversionItem::onAction(const rack::widget::Widget::ActionEvent &e) {
 	pChord->inversion = inversion;
 	pChord->dirty = true;
 }
 
-void InversionChoice::onAction(const rack::event::Action &e) {
+void InversionChoice::onAction(const rack::widget::Widget::ActionEvent &e) {
 	if (!pState)
 		return;
 
