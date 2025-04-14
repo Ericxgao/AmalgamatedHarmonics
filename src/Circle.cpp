@@ -118,10 +118,10 @@ void Circle::process(const ProcessArgs &args) {
 
 	if (rotLStatus) {
 		#ifndef METAMODULE
-if (debugEnabled()) { std::cout << stepX << " Rotate left: " << curKeyIndex; }
-#endif
+		if (debugEnabled()) { std::cout << stepX << " Rotate left: " << curKeyIndex; }
+		#endif
 		if (inVoltScale == music::RootScaling::CIRCLE) {
-			curKeyIndex = curKeyIndex ? 11 : curKeyIndex - 1; // Wrap
+			curKeyIndex = curKeyIndex == 0 ? 11 : curKeyIndex - 1; // Wrap
 		} else {
 			curKeyIndex = curKeyIndex + 5;
 			if (curKeyIndex > 11) {
@@ -130,8 +130,8 @@ if (debugEnabled()) { std::cout << stepX << " Rotate left: " << curKeyIndex; }
 		}
 
 		#ifndef METAMODULE
-if (debugEnabled()) { std::cout << " -> " << curKeyIndex << std::endl;	}
-#endif
+		if (debugEnabled()) { std::cout << " -> " << curKeyIndex << std::endl;	}
+		#endif
 	} 
 
 	if (rotRStatus) {
