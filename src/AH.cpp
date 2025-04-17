@@ -8,7 +8,7 @@ void init(rack::Plugin *p) {
 
 	// For each module, specify the ModuleWidget subclass, manufacturer slug (for saving in patches), manufacturer human-readable name, module slug, 
 	// and module name
-	p->addModel(modelArp31);
+	// p->addModel(modelArp31);
 	p->addModel(modelArp32);
 	p->addModel(modelBombe);
 	p->addModel(modelChord);
