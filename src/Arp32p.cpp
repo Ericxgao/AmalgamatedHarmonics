@@ -21,9 +21,17 @@ struct Pattern2 {
 	unsigned int MAJOR[7] = {0,2,4,5,7,9,11};
 	unsigned int MINOR[7] = {0,2,3,5,7,8,10};
 		
-	virtual const std::string & getName() = 0;
+	virtual const char* getName() const = 0;
 
+	// TODO: Unit tests for Pattern2::initialise and derived class overrides:
+	// - Test correct population of 'notes' vector for each pattern type (Diverge, Converge, Return, Bounce, Rez, OnTheRun)
+	//   across various lengths, step sizes, scales, and repeatLast settings.
+	// - Verify 'nNotes' is correctly set to notes.size().
+	// - Verify 'index' is set to 'patternOffset % nNotes'.
+	// - Verify 'patternOffset' is correctly applied (e.g. patternOffset = patternOffset % nNotes).
+	// - Verify notes.capacity() is >= expected reservation (MAX_STEPS * 2 for dynamic, specific for Rez/OnTheRun).
 	virtual void initialise(unsigned int _length, unsigned int _scale, int _size, unsigned int _offset, bool _repeat) {
+		notes.reserve(Arp32::MAX_STEPS * 2); // Max length for Return/Bounce can be 2*patternLength
 		patternLength = _length;
 		stepSize = _size;
 		stepScale = _scale;
@@ -41,8 +49,18 @@ struct Pattern2 {
 		index = patternOffset;
 	}
 
+	// TODO: Unit tests for getOffset:
+	// - Test with empty notes vector (should return 0).
+	// - Test with index out of bounds (e.g., index >= notes.size()) (should return 0).
+	// - Test with valid index and notes (should return notes[index]).
 	int getOffset() {
 		// std::cout << "OUT " << index << " " << notes[index] << std::endl;
+		if (notes.empty()) {
+			return 0;
+		}
+		if (index >= notes.size()) {
+			return 0;
+		}
 		return notes[index];
 	}
 
@@ -63,8 +81,21 @@ struct Pattern2 {
 		return sign * ((i / 7) * 12 + MINOR[i % 7]);
 	}
 
+	// TODO: Unit tests for randomize:
+	// - Test behavior when length (nNotes - patternOffset) is zero or negative (should return early).
+	// - Test normal operation:
+	//   - Verify that two different elements in 'notes' (within the range [patternOffset, nNotes-1]) are swapped.
+	//   - Verify that if p1 == p2 initially, an attempt is made to find a different p2.
 	void randomize() {
 		int length = nNotes - patternOffset;
+
+#ifndef METAMODULE
+		if (length <= 0) {
+			std::cout << "randomize() called with non-positive length, returning." << std::endl;
+			return;
+		}
+#endif
+
 		int p1 = (rand() % length) + patternOffset;
 		int p2 = (rand() % length) + patternOffset;
 		int tries = 0;
@@ -92,9 +123,9 @@ struct Pattern2 {
 
 struct DivergePattern2 : Pattern2 {
 
-	const std::string name = "Diverge";
+	const char* const name = "Diverge";
 
-	const std::string & getName() override {
+	const char* getName() const override {
 		return name;
 	};
 
@@ -133,9 +164,9 @@ struct DivergePattern2 : Pattern2 {
 
 struct ConvergePattern2 : Pattern2 {
 
-	const std::string name = "Converge";
+	const char* const name = "Converge";
 
-	const std::string & getName() override {
+	const char* getName() const override {
 		return name;
 	};
 
@@ -174,9 +205,9 @@ struct ConvergePattern2 : Pattern2 {
 
 struct ReturnPattern2 : Pattern2 {
 
-	const std::string name = "Return";
+	const char* const name = "Return";
 
-	const std::string & getName() override {
+	const char* getName() const override {
 		return name;
 	};
 
@@ -232,9 +263,9 @@ struct ReturnPattern2 : Pattern2 {
 
 struct BouncePattern2 : Pattern2 {
 
-	const std::string name = "Bounce";
+	const char* const name = "Bounce";
 
-	const std::string & getName() override {
+	const char* getName() const override {
 		return name;
 	};
 
@@ -305,13 +336,14 @@ struct NotePattern2 : Pattern2 {
 
 struct RezPattern2 : NotePattern2 {
 
-	const std::string name = "Rez";
+	const char* const name = "Rez";
 
-	const std::string & getName() override {
+	const char* getName() const override {
 		return name;
 	};
 
 	RezPattern2() {
+		notes.reserve(17);
 		notes.clear();
 		notes.push_back(0);
 		notes.push_back(12);
@@ -335,13 +367,14 @@ struct RezPattern2 : NotePattern2 {
 
 struct OnTheRunPattern2 : NotePattern2 {
 	
-	const std::string name = "On The Run";
+	const char* const name = "On The Run";
 
-	const std::string & getName() override {
+	const char* getName() const override {
 		return name;
 	};
 
 	OnTheRunPattern2() {
+		notes.reserve(9);
 		notes.clear();
 		notes.push_back(0);
 		notes.push_back(4);
@@ -427,6 +460,18 @@ struct Arp32 : core::AHModule {
 		onReset();
 		id = rand();
 		debugFlag = false;
+		// Initialize the currently selected pattern with its specific repeatEnd setting
+		currPatt->initialise(1, 0, 1, 0, repeatEnd); 
+		// Then, ensure all patterns (including the current one again, which is harmless and simpler)
+		// are initialized with a default small size and repeatEnd=false to pre-allocate their vectors
+		// and populate them with minimal data.
+		// TODO: Unit tests for Arp32 constructor's pattern initialization:
+		// - Verify currPatt is initialized with correct default parameters (length=1, scale=0, size=1, offset=0, and module's repeatEnd).
+		// - Verify all patterns in the 'patterns' vector are initialized with default parameters (length=1, scale=0, size=1, offset=0, repeat=false).
+		// - Verify notes vectors in all patterns have their capacity reserved appropriately after this initialization.
+		for (Pattern2* patt : patterns) {
+			patt->initialise(1, 0, 1, 0, false); 
+		}
 	}
 
 	void process(const ProcessArgs &args) override;
@@ -500,7 +545,7 @@ struct Arp32 : core::AHModule {
 	OnTheRunPattern2		patt_ontherun;
 
 	Pattern2 *currPatt = &patt_diverge;
-	std::string nextPattern;
+	const char* nextPattern = "";
 
 };
 
@@ -728,21 +773,21 @@ struct Arp32Display : TransparentWidget {
 				switch(module->inputScale) {
 					case 0: 
 						snprintf(text, sizeof(text), "%s (%d, %dst, %d)", 
-							module->nextPattern.c_str(),
+							module->nextPattern,
 							module->inputLen,
 							module->inputSize,
 							module->offset);
 						break;
 					case 1: 
 						snprintf(text, sizeof(text), "%s (%d, %dM, %d)", 
-							module->nextPattern.c_str(),
+							module->nextPattern,
 							module->inputLen,
 							module->inputSize,
 							module->offset);
 						break;
 					case 2: 
 						snprintf(text, sizeof(text), "%s (%d, %dm, %d)", 
-							module->nextPattern.c_str(),
+							module->nextPattern,
 							module->inputLen,
 							module->inputSize,
 							module->offset);
